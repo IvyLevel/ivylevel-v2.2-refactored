@@ -8,3 +8,4 @@ Resources:
           ContainerName: "app"
           ContainerPort: 8000
           HostPort: 8000
+        ECSServiceName: ivylevel-backend-task-service-cd
