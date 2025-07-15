@@ -3,7 +3,7 @@ Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: <TASK_DEFINITION>
+        TaskDefinition: ivylevel-backend-task
         LoadBalancerInfo:
           ContainerName: "app"
           ContainerPort: 8000 

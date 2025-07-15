@@ -1,47 +1,38 @@
 version: 0.2
 
 phases:
-  pre_build:
+  install:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/ivylevel-backend-new
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - BUILD_ID=$(echo $CODEBUILD_BUILD_ID | cut -d ':' -f 2)
-      - echo "Repository URI: $REPOSITORY_URI"
-      - echo "Image Tag: $IMAGE_TAG"
-      - echo "Build ID: $BUILD_ID"
-  build:
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+  pre_build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - cd backend
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
-      - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker build -t $REPOSITORY_URI:latest -f backend/Dockerfile backend/
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
+  build:
+    commands:
+      - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Writing image definitions file...
-      - printf '[{"name":"app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imageDefinitions.json
-      - mv imageDefinitions.json ../imageDefinitions.json
-      - cd ..
+      - printf '[{"name":"app","imageUri":"%s"}]' $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION > imageDefinitions.json
       - echo Updating task definition with new image...
-      - sed "s|<IMAGE1_NAME>|$REPOSITORY_URI:$IMAGE_TAG|g" taskdef.json > taskdef_updated.json
+      - sed "s|<IMAGE1_NAME>|$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION|g" taskdef.json > taskdef_updated.json
       - mv taskdef_updated.json taskdef.json
-      - echo Updating appspec with task definition...
-      - sed "s|<TASK_DEFINITION>|ivylevel-backend-task|g" appspec.yml > appspec_updated.yml
-      - mv appspec_updated.yml appspec.yml
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json
       - cat appspec.yml
-
+      - echo "Verifying artifacts exist:"
+      - ls -la *.json *.yml
+  post_build:
+    commands:
+      - echo Build completed on `date`
 artifacts:
   files:
     - imageDefinitions.json
     - appspec.yml
     - taskdef.json
-  discard-paths: no
