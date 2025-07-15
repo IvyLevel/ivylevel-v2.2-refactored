@@ -29,38 +29,15 @@ phases:
       - echo "$TASK_DEF_OUTPUT"
       - TASK_DEF_ARN=$(echo "$TASK_DEF_OUTPUT" | jq -r '.taskDefinition.taskDefinitionArn // empty')
       - echo "Extracted Task Definition ARN: '$TASK_DEF_ARN'"
-      - |
-        if [ -z "$TASK_DEF_ARN" ] || [ "$TASK_DEF_ARN" = "null" ]; then
-          echo "ERROR: Failed to extract task definition ARN"
-          echo "TASK_DEF_OUTPUT: $TASK_DEF_OUTPUT"
-          exit 1
-        fi
+      - if [ -z "$TASK_DEF_ARN" ] || [ "$TASK_DEF_ARN" = "null" ]; then echo "ERROR: Failed to extract task definition ARN"; echo "TASK_DEF_OUTPUT: $TASK_DEF_OUTPUT"; exit 1; fi
       - echo "Task Definition ARN: $TASK_DEF_ARN"
       - echo Updating appspec.yml with TaskDefinition ARN...
       - sed "s|<TASK_DEFINITION_ARN>|$TASK_DEF_ARN|g" appspec.yml > appspec_updated.yml
       - mv appspec_updated.yml appspec.yml
       - echo "Validating appspec.yml structure..."
-      - |
-        if grep -q "ContainerPort: 8000" appspec.yml; then
-          echo "SUCCESS: ContainerPort found in AppSpec"
-        else
-          echo "ERROR: ContainerPort missing in AppSpec"
-          exit 1
-        fi
-      - |
-        if grep -q "ContainerName: \"app\"" appspec.yml; then
-          echo "SUCCESS: ContainerName found in AppSpec"
-        else
-          echo "ERROR: ContainerName missing in AppSpec"
-          exit 1
-        fi
-      - |
-        if grep -q "$TASK_DEF_ARN" appspec.yml; then
-          echo "SUCCESS: TaskDefinition ARN injected"
-        else
-          echo "ERROR: ARN missing from AppSpec"
-          exit 1
-        fi
+      - if grep -q "ContainerPort: 8000" appspec.yml; then echo "SUCCESS: ContainerPort found in AppSpec"; else echo "ERROR: ContainerPort missing in AppSpec"; exit 1; fi
+      - if grep -q "ContainerName: \"app\"" appspec.yml; then echo "SUCCESS: ContainerName found in AppSpec"; else echo "ERROR: ContainerName missing in AppSpec"; exit 1; fi
+      - if grep -q "$TASK_DEF_ARN" appspec.yml; then echo "SUCCESS: TaskDefinition ARN injected"; else echo "ERROR: ARN missing from AppSpec"; exit 1; fi
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json
