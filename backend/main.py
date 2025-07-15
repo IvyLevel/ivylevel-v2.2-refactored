@@ -125,34 +125,12 @@ def query_kb(request: QueryRequest):
 
 @app.get("/health")
 def health():
-    # Test database connection
-    db_status = "disconnected"
-    try:
-        conn = get_db_connection()
-        if conn:
-            cur = conn.cursor()
-            cur.execute("SELECT 1")
-            cur.fetchone()
-            cur.close()
-            conn.close()
-            db_status = "connected"
-        else:
-            db_status = "using_mock"
-    except Exception as e:
-        db_status = f"error: {str(e)}"
-    
+    """Simple health check endpoint for load balancer"""
     return {
-        "status": "healthy", 
-        "pinecone": "connected", 
-        "database": db_status,
-        "mock_users_count": len(mock_users),
+        "status": "healthy",
+        "message": "IvyLevel Backend is running",
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "endpoints": {
-            "provision": "/provision",
-            "kb_query": "/kb/query",
-            "health": "/health",
-            "db_test": "/db/test"
-        }
+        "timestamp": "2025-07-15T06:10:00Z"
     }
 
 @app.get("/")
