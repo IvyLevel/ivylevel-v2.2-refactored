@@ -1,15 +1,2 @@
 version: 0.0
-Resources:
-  - TargetService:
-      Type: AWS::ECS::Service
-      Properties:
-        TaskDefinition: <TASK_DEFINITION>
-        LoadBalancerInfo:
-          ContainerName: "ivylevel-backend"
-          ContainerPort: 8000
-        PlatformVersion: "LATEST"
-        NetworkConfiguration:
-          AwsvpcConfiguration:
-            Subnets: ["subnet-02a078d279892686b", "subnet-0da37b7efe6cb67ae", "subnet-0cf896702a95eca7d", "subnet-0bbc08cbd2401121e", "subnet-0862ea4a6c25d31d3"]
-            SecurityGroups: ["sg-02b86a14f9a3192df"]
-            AssignPublicIp: "DISABLED" 
+Resources: [] 
