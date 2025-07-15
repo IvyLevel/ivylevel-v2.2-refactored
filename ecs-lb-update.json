@@ -1,0 +1,7 @@
+[
+  {
+    "targetGroupArn": "<your-target-group-arn>",
+    "containerName": "ivylevel-backend",
+    "containerPort": 8000
+  }
+]

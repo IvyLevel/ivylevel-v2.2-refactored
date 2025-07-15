@@ -25,12 +25,19 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
       - echo Writing image definitions file...
-      - printf '{"ImageURI":"%s"}' $REPOSITORY_URI:latest > imageDefinitions.json
+      - printf '[{"name":"app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imageDefinitions.json
       - mv imageDefinitions.json ../imageDefinitions.json
-      - mv ../appspec.yml ../taskdef.json ../ 2>/dev/null || true
-      - ls -al /
-      - ls -al .
-      - ls -al backend
+      - cd ..
+      - echo Updating task definition with new image...
+      - sed "s|<IMAGE1_NAME>|$REPOSITORY_URI:$IMAGE_TAG|g" taskdef.json > taskdef_updated.json
+      - mv taskdef_updated.json taskdef.json
+      - echo Updating appspec with task definition...
+      - sed "s|<TASK_DEFINITION>|ivylevel-backend-task|g" appspec.yml > appspec_updated.yml
+      - mv appspec_updated.yml appspec.yml
+      - echo "Generated artifacts:"
+      - cat imageDefinitions.json
+      - cat taskdef.json
+      - cat appspec.yml
 
 artifacts:
   files:
@@ -38,4 +45,3 @@ artifacts:
     - appspec.yml
     - taskdef.json
   discard-paths: no
-  name: ivylevel-backend-$BUILD_ID

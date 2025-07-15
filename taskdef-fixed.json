@@ -1,0 +1,62 @@
+{
+  "family": "ivylevel-backend-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::211125397081:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "ivylevel-backend",
+      "image": "211125397081.dkr.ecr.us-east-1.amazonaws.com/ivylevel-backend-new:dd24f48",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "PINECONE_API_KEY",
+          "value": "pcsk_5NXuE6_bfXMwA1Lj5djvEPPKqgN17FbicWVGEekcAxKiiouNPvjJrgnvDUSrtzXY9foE8"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "ivylevel-database-1.cbeyu4q002ay.us-east-1.rds.amazonaws.com"
+        },
+        {
+          "name": "DB_NAME",
+          "value": "ivylevel"
+        },
+        {
+          "name": "DB_USER",
+          "value": "ivylevel_admin"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "YOUR_ACTUAL_DB_PASSWORD_HERE"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ivylevel-backend-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ]
+} 
