@@ -19,7 +19,7 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo "Writing image definitions file..."
-      - printf '[{"name":"app","imageUri":"%s"}]' $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION > imageDefinitions.json
+      - printf '[{"name":"ivylevel-backend","imageUri":"%s"}]' $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION > imageDefinitions.json
       - echo "Updating task definition with new image..."
       - sed "s|<IMAGE1_NAME>|$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION|g" taskdef.json > taskdef_updated.json
       - mv taskdef_updated.json taskdef.json
@@ -27,10 +27,15 @@ phases:
       - TASK_DEF_OUTPUT=$(aws ecs register-task-definition --cli-input-json file://taskdef.json)
       - echo "Task definition registered successfully"
       - TASK_DEF_ARN=$(echo $TASK_DEF_OUTPUT | jq -r .taskDefinition.taskDefinitionArn)
+      - echo "Task Definition ARN: $TASK_DEF_ARN"
+      - if [ -z "$TASK_DEF_ARN" ]; then echo "ERROR: Task Definition ARN is empty"; exit 1; fi
+      - if [[ ! "$TASK_DEF_ARN" =~ ^arn:aws:ecs: ]]; then echo "ERROR: Invalid Task Definition ARN format: $TASK_DEF_ARN"; exit 1; fi
       - echo "Task Definition ARN extracted successfully"
       - echo "Updating appspec.yml with TaskDefinition ARN..."
       - sed "s|<TASK_DEFINITION_ARN>|$TASK_DEF_ARN|g" appspec.yml > appspec_updated.yml
       - mv appspec_updated.yml appspec.yml
+      - echo "Validating updated appspec.yml..."
+      - cat appspec.yml
       - echo "AppSpec validation completed"
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
