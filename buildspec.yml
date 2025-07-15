@@ -25,12 +25,9 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
       - echo Writing image definitions file...
-      - printf '{"ImageURI":"%s"}' $REPOSITORY_URI:$IMAGE_TAG > imageDefinitions.json
-      - echo Uploading artifacts to S3...
-      - aws s3 cp imageDefinitions.json s3://ivylevel-v2-2-artifacts/builds/$BUILD_ID/
-      - aws s3 cp appspec.yml s3://ivylevel-v2-2-artifacts/builds/$BUILD_ID/
-      - aws s3 cp taskdef.json s3://ivylevel-v2-2-artifacts/builds/$BUILD_ID/
-      - echo Build artifacts uploaded to s3://ivylevel-v2-2-artifacts/builds/$BUILD_ID/
+      - printf '{"ImageURI":"%s"}' $REPOSITORY_URI:latest > imageDefinitions.json
+      - mv imageDefinitions.json ../imageDefinitions.json
+      - mv ../appspec.yml ../taskdef.json ../ 2>/dev/null || true
 
 artifacts:
   files:
