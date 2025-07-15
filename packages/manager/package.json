@@ -1,0 +1,15 @@
+{
+  "name": "@ivylevel/manager",
+  "version": "1.0.0",
+  "description": "Manager-specific functionality for IvyLevel (CUJ 8 + future)",
+  "main": "src/index.js",
+  "dependencies": {
+    "@ivylevel/core": "*",
+    "react": "^18.2.0",
+    "react-router-dom": "^6.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  }
+} 

@@ -1,0 +1,18 @@
+{
+  "name": "@ivylevel/core",
+  "version": "1.0.0",
+  "description": "Shared core functionality for IvyLevel",
+  "main": "src/index.js",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "redux": "^4.2.0",
+    "react-redux": "^8.0.0",
+    "@reduxjs/toolkit": "^1.9.0",
+    "pg": "^8.10.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  }
+} 
