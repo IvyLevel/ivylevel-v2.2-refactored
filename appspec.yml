@@ -7,3 +7,4 @@ Resources:
         LoadBalancerInfo:
           ContainerName: "app"
           ContainerPort: 8000
+          HostPort: 8000
