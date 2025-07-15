@@ -25,7 +25,18 @@ phases:
       - echo Registering task definition...
       - aws ecs register-task-definition --cli-input-json file://taskdef.json
       - echo "Validating appspec.yml structure..."
-      - grep -q "HostPort: 8000" appspec.yml && echo "SUCCESS: HostPort found in AppSpec" || echo "ERROR: HostPort missing in AppSpec"
+      - |
+        if grep -q "ContainerPort: 8000" appspec.yml; then
+          echo "SUCCESS: ContainerPort found in AppSpec"
+        else
+          echo "ERROR: ContainerPort missing in AppSpec"
+        fi
+      - |
+        if grep -q "ECSServiceName: ivylevel-backend-task-service-cd" appspec.yml; then
+          echo "SUCCESS: ECS Service Name found in AppSpec"
+        else
+          echo "ERROR: ECS Service Name missing in AppSpec"
+        fi
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json
