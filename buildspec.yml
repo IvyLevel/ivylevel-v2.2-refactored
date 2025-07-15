@@ -31,12 +31,7 @@ phases:
         else
           echo "ERROR: ContainerPort missing in AppSpec"
         fi
-      - |
-        if grep -q "ECSServiceName: ivylevel-backend-task-service-cd" appspec.yml; then
-          echo "SUCCESS: ECS Service Name found in AppSpec"
-        else
-          echo "ERROR: ECS Service Name missing in AppSpec"
-        fi
+
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json

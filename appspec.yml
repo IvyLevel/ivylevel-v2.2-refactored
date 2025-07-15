@@ -7,4 +7,3 @@ Resources:
         LoadBalancerInfo:
           ContainerName: "app"
           ContainerPort: 8000
-        ECSServiceName: ivylevel-backend-task-service-cd
