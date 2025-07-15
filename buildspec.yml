@@ -25,7 +25,16 @@ phases:
       - mv taskdef_updated.json taskdef.json
       - echo Registering task definition...
       - TASK_DEF_OUTPUT=$(aws ecs register-task-definition --cli-input-json file://taskdef.json)
-      - TASK_DEF_ARN=$(echo $TASK_DEF_OUTPUT | jq -r '.taskDefinition.taskDefinitionArn')
+      - echo "Raw task definition output:"
+      - echo "$TASK_DEF_OUTPUT"
+      - TASK_DEF_ARN=$(echo "$TASK_DEF_OUTPUT" | jq -r '.taskDefinition.taskDefinitionArn // empty')
+      - echo "Extracted Task Definition ARN: '$TASK_DEF_ARN'"
+      - |
+        if [ -z "$TASK_DEF_ARN" ] || [ "$TASK_DEF_ARN" = "null" ]; then
+          echo "ERROR: Failed to extract task definition ARN"
+          echo "TASK_DEF_OUTPUT: $TASK_DEF_OUTPUT"
+          exit 1
+        fi
       - echo "Task Definition ARN: $TASK_DEF_ARN"
       - echo Updating appspec.yml with TaskDefinition ARN...
       - sed "s|<TASK_DEFINITION_ARN>|$TASK_DEF_ARN|g" appspec.yml > appspec_updated.yml
