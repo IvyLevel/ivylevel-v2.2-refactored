@@ -28,8 +28,16 @@ phases:
       - echo "Task definition registered successfully"
       - TASK_DEF_ARN=$(echo $TASK_DEF_OUTPUT | jq -r .taskDefinition.taskDefinitionArn)
       - echo "Task Definition ARN: $TASK_DEF_ARN"
-      - if [ -z "$TASK_DEF_ARN" ]; then echo "ERROR: Task Definition ARN is empty"; exit 1; fi
-      - if [[ ! "$TASK_DEF_ARN" =~ ^arn:aws:ecs: ]]; then echo "ERROR: Invalid Task Definition ARN format: $TASK_DEF_ARN"; exit 1; fi
+      - |
+        if [ -z "$TASK_DEF_ARN" ]; then 
+          echo "ERROR: Task Definition ARN is empty"
+          exit 1
+        fi
+      - |
+        if [[ ! "$TASK_DEF_ARN" =~ ^arn:aws:ecs: ]]; then 
+          echo "ERROR: Invalid Task Definition ARN format: $TASK_DEF_ARN"
+          exit 1
+        fi
       - echo "Task Definition ARN extracted successfully"
       - echo "Updating appspec.yml with TaskDefinition ARN..."
       - sed "s|<TASK_DEFINITION_ARN>|$TASK_DEF_ARN|g" appspec.yml > appspec_updated.yml
