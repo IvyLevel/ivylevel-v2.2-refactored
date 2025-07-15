@@ -28,7 +28,12 @@ phases:
       - echo "Task definition registered successfully"
       - TASK_DEF_ARN=$(echo $TASK_DEF_OUTPUT | jq -r .taskDefinition.taskDefinitionArn)
       - echo "Task Definition ARN extracted successfully"
-      - echo "ARN value: $TASK_DEF_ARN"
+      - |
+        if [ -n "$TASK_DEF_ARN" ]; then
+          echo "ARN value: $TASK_DEF_ARN"
+        else
+          echo "WARNING: TASK_DEF_ARN is empty"
+        fi
       - |
         if [ -z "$TASK_DEF_ARN" ]; then 
           echo "ERROR: Task Definition ARN is empty"
