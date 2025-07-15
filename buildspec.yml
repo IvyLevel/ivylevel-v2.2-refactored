@@ -22,6 +22,13 @@ phases:
       - echo Updating task definition with new image...
       - sed "s|<IMAGE1_NAME>|$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION|g" taskdef.json > taskdef_updated.json
       - mv taskdef_updated.json taskdef.json
+      - echo Updating appspec with task definition name...
+      - sed "s|<TASK_DEFINITION>|ivylevel-backend-task|g" appspec.yml > appspec_updated.yml
+      - mv appspec_updated.yml appspec.yml
+      - echo "Validating YAML syntax..."
+      - python3 -c "import yaml; yaml.safe_load(open('appspec.yml'))" && echo "YAML syntax is valid" || echo "YAML syntax error"
+      - echo "Final appspec.yml content:"
+      - cat appspec.yml
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json
