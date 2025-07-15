@@ -10,6 +10,9 @@ phases:
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
       - BUILD_ID=$(echo $CODEBUILD_BUILD_ID | cut -d ':' -f 2)
+      - echo "Repository URI: $REPOSITORY_URI"
+      - echo "Image Tag: $IMAGE_TAG"
+      - echo "Build ID: $BUILD_ID"
   build:
     commands:
       - echo Build started on `date`
