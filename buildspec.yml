@@ -25,7 +25,7 @@ phases:
       - echo Registering task definition...
       - aws ecs register-task-definition --cli-input-json file://taskdef.json
       - echo "Validating appspec.yml structure..."
-      - grep -q "HostPort: 8000" appspec.yml && echo "✅ HostPort found in AppSpec" || echo "❌ HostPort missing in AppSpec"
+      - grep -q "HostPort: 8000" appspec.yml && echo "SUCCESS: HostPort found in AppSpec" || echo "ERROR: HostPort missing in AppSpec"
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json
