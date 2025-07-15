@@ -28,6 +28,9 @@ phases:
       - printf '{"ImageURI":"%s"}' $REPOSITORY_URI:latest > imageDefinitions.json
       - mv imageDefinitions.json ../imageDefinitions.json
       - mv ../appspec.yml ../taskdef.json ../ 2>/dev/null || true
+      - ls -al /
+      - ls -al .
+      - ls -al backend
 
 artifacts:
   files:
