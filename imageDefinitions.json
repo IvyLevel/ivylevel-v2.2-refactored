@@ -1,6 +1,1 @@
-[
-  {
-    "name": "container-name",
-    "imageUri": "dummy"
-  }
-] 
+[{"name":"app","imageUri":"211125397081.dkr.ecr.us-east-1.amazonaws.com/ivylevel-backend-new:d66a15318cc60768c76815d4035af228adbd8601"}]

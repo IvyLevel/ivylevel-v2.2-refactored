@@ -8,7 +8,7 @@
   "containerDefinitions": [
     {
       "name": "app",
-      "image": "<IMAGE1_NAME>",
+      "image": "211125397081.dkr.ecr.us-east-1.amazonaws.com/ivylevel-backend-new:d66a15318cc60768c76815d4035af228adbd8601",
       "portMappings": [
         {
           "containerPort": 8000,
