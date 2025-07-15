@@ -5,6 +5,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
+      - yum install -y jq
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
   pre_build:
     commands:
@@ -23,15 +24,34 @@ phases:
       - sed "s|<IMAGE1_NAME>|$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION|g" taskdef.json > taskdef_updated.json
       - mv taskdef_updated.json taskdef.json
       - echo Registering task definition...
-      - aws ecs register-task-definition --cli-input-json file://taskdef.json
+      - TASK_DEF_OUTPUT=$(aws ecs register-task-definition --cli-input-json file://taskdef.json)
+      - TASK_DEF_ARN=$(echo $TASK_DEF_OUTPUT | jq -r '.taskDefinition.taskDefinitionArn')
+      - echo "Task Definition ARN: $TASK_DEF_ARN"
+      - echo Updating appspec.yml with TaskDefinition ARN...
+      - sed "s|<TASK_DEFINITION_ARN>|$TASK_DEF_ARN|g" appspec.yml > appspec_updated.yml
+      - mv appspec_updated.yml appspec.yml
       - echo "Validating appspec.yml structure..."
       - |
         if grep -q "ContainerPort: 8000" appspec.yml; then
           echo "SUCCESS: ContainerPort found in AppSpec"
         else
           echo "ERROR: ContainerPort missing in AppSpec"
+          exit 1
         fi
-
+      - |
+        if grep -q "ContainerName: \"app\"" appspec.yml; then
+          echo "SUCCESS: ContainerName found in AppSpec"
+        else
+          echo "ERROR: ContainerName missing in AppSpec"
+          exit 1
+        fi
+      - |
+        if grep -q "$TASK_DEF_ARN" appspec.yml; then
+          echo "SUCCESS: TaskDefinition ARN injected"
+        else
+          echo "ERROR: ARN missing from AppSpec"
+          exit 1
+        fi
       - echo "Generated artifacts:"
       - cat imageDefinitions.json
       - cat taskdef.json
