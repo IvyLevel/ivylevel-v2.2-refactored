@@ -27,7 +27,8 @@ phases:
       - TASK_DEF_OUTPUT=$(aws ecs register-task-definition --cli-input-json file://taskdef.json)
       - echo "Task definition registered successfully"
       - TASK_DEF_ARN=$(echo $TASK_DEF_OUTPUT | jq -r .taskDefinition.taskDefinitionArn)
-      - echo "Task Definition ARN: $TASK_DEF_ARN"
+      - echo "Task Definition ARN extracted successfully"
+      - echo "ARN value: $TASK_DEF_ARN"
       - |
         if [ -z "$TASK_DEF_ARN" ]; then 
           echo "ERROR: Task Definition ARN is empty"
