@@ -1,5 +1,5 @@
-# Use Amazon's public ECR Python 3.11 image to avoid Docker Hub rate limits
-FROM public.ecr.aws/lambda/python:3.11
+# Use Amazon ECR public Python 3.11 slim image to avoid Docker Hub rate limits and support apt-get
+FROM public.ecr.aws/docker/library/python:3.11-slim
 
 # Set working directory
 WORKDIR /app
