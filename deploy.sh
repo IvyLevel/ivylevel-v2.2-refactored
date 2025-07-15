@@ -8,7 +8,7 @@ set -e
 # Configuration
 AWS_REGION="us-east-1"
 ECR_REPOSITORY="ivylevel-backend"
-ECS_CLUSTER="ivylevel-cluster"
+ECS_CLUSTER="ivylevel-cluster-new-1"
 ECS_SERVICE="ivylevel-backend-service"
 TASK_DEFINITION="ivylevel-backend-task"
 
