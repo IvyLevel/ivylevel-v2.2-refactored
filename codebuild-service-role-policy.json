@@ -74,6 +74,15 @@
                 "ecs:DescribeTaskDefinition",
                 "ecs:RegisterTaskDefinition"
             ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:iam::211125397081:role/ecsTaskExecutionRole"
+            ],
+            "Action": [
+                "iam:PassRole"
+            ]
         }
     ]
 } 
