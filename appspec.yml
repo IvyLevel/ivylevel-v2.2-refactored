@@ -5,7 +5,7 @@ Resources:
       Properties:
         TaskDefinition: <TASK_DEFINITION_ARN>
         LoadBalancerInfo:
-          ContainerName: "app"
+          ContainerName: "ivylevel-backend"
           ContainerPort: 8000
         PlatformVersion: LATEST
         NetworkConfiguration:

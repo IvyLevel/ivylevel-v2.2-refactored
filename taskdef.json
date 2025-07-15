@@ -7,8 +7,8 @@
   "executionRoleArn": "arn:aws:iam::211125397081:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "app",
-      "image": "211125397081.dkr.ecr.us-east-1.amazonaws.com/ivylevel-backend-new:d66a15318cc60768c76815d4035af228adbd8601",
+      "name": "ivylevel-backend",
+      "image": "211125397081.dkr.ecr.us-east-1.amazonaws.com/ivylevel-backend-new:latest",
       "portMappings": [
         {
           "containerPort": 8000,
@@ -17,13 +17,59 @@
         }
       ],
       "essential": true,
+      "environment": [
+        {
+          "name": "DB_NAME",
+          "value": "ivylevel"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "ivylevel-database-1.cbeyu4q002ay.us-east-1.rds.amazonaws.com"
+        },
+        {
+          "name": "PINECONE_API_KEY",
+          "value": "pcsk_5NXuE6_bfXMwA1Lj5djvEPPKqgN17FbicWVGEekcAxKiiouNPvjJrgnvDUSrtzXY9foE8"
+        },
+        {
+          "name": "PINECONE_INDEX_NAME",
+          "value": "ivylevel-db"
+        },
+        {
+          "name": "DB_USER",
+          "value": "ivylevel_admin"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "Umrah2025687)"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "5432"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/ivylevel-backend",
+          "awslogs-group": "/ecs/ivylevel-backend-task",
+          "awslogs-create-group": "true",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
+      },
+      "healthCheck": {
+        "command": [
+          "curl",
+          "-f",
+          "http://localhost:8000/health"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
       }
     }
   ]
