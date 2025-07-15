@@ -7,4 +7,4 @@ Resources:
         TaskDefinition: ivylevel-backend-task
         LoadBalancerInfo:
           ContainerName: "app"
-          ContainerPort: 8000 
+          ContainerPort: 8000
