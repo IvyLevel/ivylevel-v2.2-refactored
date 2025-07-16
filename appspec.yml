@@ -10,6 +10,9 @@ Resources:
         PlatformVersion: LATEST
         NetworkConfiguration:
           AwsvpcConfiguration:
-            Subnets: ["subnet-0130342b871650ea1", "subnet-0862ea4a6c25d31d3"]
-            SecurityGroups: ["sg-0b04365d08e122782"]
+            Subnets:
+              - subnet-0130342b871650ea1
+              - subnet-0862ea4a6c25d31d3
+            SecurityGroups:
+              - sg-0b04365d08e122782
             AssignPublicIp: ENABLED
